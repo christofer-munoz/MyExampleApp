@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         logButton.setOnClickListener(this);
         signButton.setOnClickListener(this);
 
-        dao = new daoUser(this);    //Inicializamos nuestro objeto "dao" con el contexto actual.
+        dao = new daoUser(this);    //Inicializamos nuestro objeto "dao" con el contexto actual
 
     }
 
