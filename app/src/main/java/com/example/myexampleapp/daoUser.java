@@ -27,20 +27,23 @@ public class daoUser {
     }
 
     public boolean createUser(User user) {  //Recibe un objeto User por parámetro
+            if(search(user.getEmail()) == 0) {  //Invocamos a la función search la cual nos retorna un número, si es 0, hará lo siguiente:
+                ContentValues cv = new ContentValues(); //Tipo de lista que contendrá varios valores diferentes.
 
-        ContentValues cv = new ContentValues(); //Tipo de lista que contendrá varios valores diferentes.
+                cv.put("name", user.getName()); //Asignamos el tag "name" con el valor que nos retorne el objeto.
+                cv.put("email", user.getEmail());   //Asignamos el tag "email" con el valor que nos retorne el objeto.
+                cv.put("pass", user.getPassword()); //Asignamos el tag "pass" con el valor que nos retorne el objeto.
 
-        cv.put("name", user.getName()); //Asignamos el tag "name" con el valor que nos retorne el objeto.
-        cv.put("email", user.getEmail());   //Asignamos el tag "email" con el valor que nos retorne el objeto.
-        cv.put("pass", user.getPassword()); //Asignamos el tag "pass" con el valor que nos retorne el objeto.
+                //return (conn.insert("users", null, cv) > 0);  Manera abreviada de realizar la inserción y retorno
 
-        //return (conn.insert("users", null, cv) > 0);  Manera abreviada de realizar la inserción y retorno
-
-        if (conn.insert("users", null, cv) > 0) {   //Si la inserción fue exitosa, retorna true
-            return true;
-        } else {
-            return false;
-        }
+                if (conn.insert("users", null, cv) > 0) {   //Si la inserción fue exitosa, retorna true
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {    //Si la función search retorna un valor distinto de 0, hará lo siguiente:
+                return false;   //Retorna false
+            }
 
     }
 
@@ -88,6 +91,37 @@ public class daoUser {
             cursor.close(); //Importante cerrar cursor
         }
         return false;   //Retorna false
+    }
+
+    public int search(String email) {
+        int count = 0; //Declaramos un contador
+        list = getUsers();  //Llenar una lista de usuarios
+        for (User selectedUser : list) {    //Para cada objeto "selectedUser" dentro de la lista "list", va a hacer lo siguiente:
+            if (selectedUser.getEmail().equals(email)) { //Comparando el correo del objeto iterado en este momento con el correo que llega por parametro
+                count++;    //Si son iguales los correos, aumentará en 1 nuestro contador
+            }
+        }
+        return count;
+    }
+
+    public User getUser(String email, String password) {    //Recibe un correo y una contraseña
+        list = getUsers();  //Llena una lista de todos los usuarios existentes
+        for (User user : list) {  //Para cada objeto usuario "user" dentro de la lista "list", haremos lo siguiente:
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) { //Compara si el correo y contraseña del objeto iterado en este momento son iguales a los parametros de entrada
+                return user;    //Retorna un objeto User
+            }
+        }
+        return null;    //Retorna nulo si no existe la combinación solicitada
+    }
+
+    public User getUserById(int id) {   //Este método irá a buscar un usuario por su ID
+        list = getUsers();  //Llenamos una lista con los usuarios de la base de datos
+        for (User user : list) {  //Por cada objeto User dentro de la lista, haremos lo siguiente:
+            if (user.getId() == id) {   //Compara el id del objeto iterado en este momento con el id que llega por parametro
+                return user;    //Si hay match entre ambos ids, retorna el objeto User completo.
+            }
+        }
+        return null;    //Si no hay match entre los ids, retorna nulo.
     }
 
 }

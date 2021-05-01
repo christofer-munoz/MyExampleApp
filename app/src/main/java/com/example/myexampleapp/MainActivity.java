@@ -26,9 +26,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         logButton = (Button)findViewById(R.id.LogButton);
         signButton = (Button)findViewById(R.id.SignButton);
 
+        //Agregamos los escuchadores a nuestros botones
         logButton.setOnClickListener(this);
         signButton.setOnClickListener(this);
 
+        //Inicializamos nuestro objeto
         dao = new daoUser(this);    //Inicializamos nuestro objeto "dao" con el contexto actual
 
     }
@@ -44,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (mail.equals("") || password.equals("")) {    //Si email o contraseña estan vacios nos pedirá que los completemos
                     Toast.makeText(this, "Debe completar todos los campos", Toast.LENGTH_LONG).show();  //Así se muestra un mensaje en android
                 } else if (dao.login(mail, password)) { //Intentará hacer login (retorna true or false)
+                    User loggedUser = dao.getUser(mail, password);  //Vamos a llenar un nuevo objeto User con el usuario que nos retorne la funcion getUser
                     Intent intent = new Intent(MainActivity.this, Home.class);  //Si es true, nos redirige al home
+                    intent.putExtra("id", loggedUser.getId());  //Agregar información para enviar a la otra pantalla
                     startActivity(intent);
                 } else {
                     Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_LONG).show();
